@@ -1,8 +1,7 @@
-var gulp = require('gulp')
-var eslint = require('gulp-eslint')
-var gulpif = require('gulp-if')
-var path = require('path')
-var watch = require('gulp-watch')
+const {dest, watch, src} = require('gulp')
+const eslint = require('gulp-eslint')
+const gulpif = require('gulp-if')
+const path = require('path')
 
 function handleResult(result) {
   result.messages.forEach(function(message) {
@@ -12,25 +11,25 @@ function handleResult(result) {
   })
 }
 
-function fixLintableFile(vinyl) {
+function fixLintableFile(vinyl, cb) {
   if (vinyl.contents) {
-    gulp.src(vinyl.path)
+    src(vinyl.path)
       .on('error', function() {}) // Prevent a crash. Let eslint.result report the error.
       .pipe(eslint({fix: true}))
       .pipe(eslint.result(handleResult))
-      .pipe(gulpif(wasFixedByEslint, gulp.dest(path.dirname(vinyl.path))))
+      .pipe(gulpif(wasFixedByEslint, dest(path.dirname(vinyl.path))))
   }
+  cb()
 }
 
 function wasFixedByEslint(vinyl) {
   return vinyl.eslint && vinyl.eslint.fixed
 }
 
-module.exports = function(taskName, globsToWatch) {
-  taskName = taskName || 'eslint-auto-fix'
+module.exports = function(globsToWatch) {
   globsToWatch = globsToWatch || ['**/*.js', '!**/node_modules', '!**/bower_components']
-
-  return gulp.task(taskName, function() {
+  return gulp.task(function() {
     return watch(globsToWatch, fixLintableFile)
   })
 }
+

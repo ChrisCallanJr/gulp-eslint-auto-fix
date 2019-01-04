@@ -24,11 +24,10 @@
     "javascript"
   ],
   "dependencies": {
-    "gulp-if": "^2.0.2",
-    "gulp-watch": "^4.3.11"
+    "gulp-if": "^2.0.2"
   },
   "peerDependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-eslint": "^3.0.1"
   }
 }
